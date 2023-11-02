@@ -76,3 +76,22 @@
     }
   }
 }
+@media screen and (max-width: 650px) {
+  .header {
+    height: 200px;
+    .searchBlock {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+}
+@media screen and (max-width: 400px) {
+  .header {
+    .searchBlock {
+      .search {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  }
+}

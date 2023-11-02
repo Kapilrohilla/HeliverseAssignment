@@ -28,6 +28,7 @@ const Header = ({ displayCreateUser }) => {
           <div className="searchInput">
             <input
               type="search"
+              placeholder="name..."
               value={searchString}
               onChange={({ target }) => setSearchString(target.value)}
             />
