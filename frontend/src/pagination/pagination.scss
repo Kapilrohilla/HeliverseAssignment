@@ -1,0 +1,17 @@
+.pagination {
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.3rem;
+  .preNav,
+  .nextNav {
+    height: 100%;
+    width: 30px;
+    font-weight: 500;
+    border: none;
+    background-color: #0284c7;
+    color: white;
+  }
+}

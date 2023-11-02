@@ -19,6 +19,8 @@ const getUser = async (req, res, next) => {
   gender = Boolean(gender);
   available = Boolean(available);
   const skip = (page - 1) * limit;
+
+  let users; // output
   if (name) {
     try {
       const pipeline = [
@@ -41,15 +43,17 @@ const getUser = async (req, res, next) => {
           $limit: limit,
         },
       ];
-      const users = await User.aggregate(pipeline);
+      users = await User.aggregate(pipeline);
       return res.status(200).send(users);
     } catch (err) {
       next(err);
     }
   } else {
     try {
-      const users = await User.find().skip(skip).limit(limit);
-      res.send(users);
+      users = await User.find().skip(skip).limit(limit);
+      totalUser = await User.find().count();
+      users = [users, totalUser];
+      return res.status(200).send(users);
     } catch (err) {
       next(err);
     }

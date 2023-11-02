@@ -1,3 +1,4 @@
+const logger = require("./logger");
 function errorHandler(err, req, res, next) {
   if (
     err.name === "MongoServerSelectionError" ||

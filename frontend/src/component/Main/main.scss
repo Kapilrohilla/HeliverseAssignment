@@ -1,0 +1,54 @@
+.main {
+  padding: 10px;
+  height: 700px;
+  overflow-y: scroll;
+  table.userTable {
+    width: 100%;
+    thead {
+      text-align: left;
+    }
+    th {
+      font-weight: 500;
+    }
+    tr {
+      padding: 3px;
+      margin-block: 3px;
+      text-align: left;
+      img {
+        height: 100%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      td:first-of-type {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        .userDetails {
+          :first-child {
+            font-weight: 500;
+          }
+          :last-child {
+            font-weight: 400;
+          }
+        }
+      }
+      td:nth(4) {
+        text-transform: capitalize;
+      }
+      td:last-of-type {
+        button {
+          //   background-color: unset;
+          border: none;
+          outline: none;
+          background-color: #eee;
+          //   padding: 1px 2px;
+          font-weight: 500;
+          border-radius: 30%;
+        }
+      }
+    }
+  }
+}
