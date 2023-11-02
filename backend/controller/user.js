@@ -39,12 +39,22 @@ const getUser = async (req, res, next) => {
             },
           },
         },
+
+        {
+          $skip: skip,
+        },
         {
           $limit: limit,
         },
       ];
       users = await User.aggregate(pipeline);
-      return res.status(200).send(users);
+      // finding total users
+      const totalUserCountPipeline = pipeline.slice(0, 2).concat({
+        $count: "totalUser",
+      });
+      // total user count matching the name query
+      let totalUser = await User.aggregate(totalUserCountPipeline);
+      return res.status(200).send([users, totalUser[0].totalUser]);
     } catch (err) {
       next(err);
     }

@@ -1,5 +1,74 @@
 .header {
+  padding-inline: 10px;
   h1 {
     font-weight: 500;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    border-bottom: 3px solid rgb(222, 184, 135);
+  }
+  .searchBlock {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.2rem;
+    height: 30px;
+    .search {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      .searchInput {
+        display: flex;
+        height: 100%;
+        gap: 10px;
+        align-items: center;
+        border: 1px solid black;
+        border-radius: 5px;
+        padding-inline: 5px;
+
+        input[type="search"] {
+          border: none;
+          height: 100%;
+          padding-left: 4px;
+          font-size: 1.1rem;
+          outline: none;
+        }
+        button {
+          background: none;
+          border: none;
+          svg {
+            vertical-align: middle;
+            height: 100%;
+            font-size: 25px;
+          }
+        }
+      }
+    }
+    .addUser {
+      height: 100%;
+      button {
+        height: 100%;
+        background-color: #488318;
+        font-weight: 700;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+      }
+    }
+    .reset {
+      height: 100%;
+      button {
+        height: 100%;
+        background-color: #cb2e1d;
+
+        font-weight: 700;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+      }
+    }
   }
 }

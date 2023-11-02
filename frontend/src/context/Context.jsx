@@ -8,18 +8,17 @@ const UserContextProvider = ({ children }) => {
   const [page, setPage] = useState(1);
   const limit = 20;
   const totalPage = useRef(0);
-
+  console.log(user);
+  const [queryParam, setQueryParams] = useState(``);
   useEffect(() => {
-    let link = `/users?page=${page}&limit=${limit}`;
+    let link = `/users?page=${page}&limit=${limit}&${queryParam}`;
     console.log(link);
     axios.get(link).then((d) => {
       setUser(d.data[0]);
 
       totalPage.current = Math.ceil(d.data[1] / limit);
-      ("");
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page, queryParam]);
   return (
     <UserContext.Provider
       value={{
@@ -28,6 +27,8 @@ const UserContextProvider = ({ children }) => {
         page,
         setPage,
         totalPage: totalPage.current,
+        queryParam,
+        setQueryParams,
       }}
     >
       {children}

@@ -5,8 +5,8 @@ function errorHandler(err, req, res, next) {
     err.name === "MongooseError"
   ) {
     return res.status(500).json({
-      err: "Sorry! database integration is failed",
-      // msg: err.message,
+      err: "Sorry! somehing wrong with database connection",
+      msg: err.message,
     });
   } else if (err.name === "ValidationError") {
     return res.status(400).json({

@@ -6,7 +6,6 @@ import UserContextProvider from "./context/Context";
 import Pagination from "./pagination/Pagination";
 function App() {
   axios.defaults.baseURL = "http://localhost:3000/api/";
-
   return (
     <UserContextProvider>
       <div className="app-container">
