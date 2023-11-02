@@ -4,8 +4,8 @@ import { useState } from "react";
 
 import { UserContext } from "../../context/Context";
 import { useContext } from "react";
-
-const Header = () => {
+import PropsTypes from "prop-types";
+const Header = ({ displayCreateUser }) => {
   const [searchString, setSearchString] = useState("");
 
   const { setQueryParams } = useContext(UserContext);
@@ -40,11 +40,19 @@ const Header = () => {
           <button onClick={handleResetBtn}>RESET</button>
         </div>
         <div className="addUser">
-          <button>ADD-USER</button>
+          <button
+            onClick={() => {
+              displayCreateUser(true);
+            }}
+          >
+            ADD-USER
+          </button>
         </div>
       </form>
     </header>
   );
 };
-
+Header.propTypes = {
+  displayCreateUser: PropsTypes.func.isRequired,
+};
 export default Header;
