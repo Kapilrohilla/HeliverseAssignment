@@ -4,6 +4,7 @@ const {
   getStorage,
   ref,
   getDownloadURL,
+  deleteObject,
   uploadBytesResumable,
 } = require("firebase/storage");
 const config = require("../utils/config");
@@ -90,13 +91,28 @@ const getSpecificUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const delRes = await User.findByIdAndDelete(id);
-    if (!delRes) {
-      return res.status(400).json({
+    const user = await User.findById(id);
+    if (user !== null) {
+      const userProfilePic = user.avatar;
+      // image reverence in firebase
+      console.log(userProfilePic);
+      if (userProfilePic.includes("firebasestorage")) {
+        const imageRef = ref(storage, userProfilePic);
+        const r = await deleteObject(imageRef);
+        console.log(r);
+      }
+      const delRes = await User.findByIdAndDelete(id);
+      if (!delRes) {
+        return res.status(400).json({
+          err: "user not found",
+        });
+      }
+      res.sendStatus(200);
+    } else {
+      res.status(404).send({
         err: "user not found",
       });
     }
-    res.status(204).send(delRes);
   } catch (err) {
     next(err);
   }
