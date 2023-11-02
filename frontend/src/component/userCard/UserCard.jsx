@@ -1,9 +1,21 @@
 import Delete from "../../Icons/Delete";
 import PropTypes from "prop-types";
 import Edit from "../../Icons/Edit";
-const UserCard = ({ user }) => {
-  const { first_name, last_name, avatar, email, domain, available } = user;
+import axios from "axios";
+
+const UserCard = ({ user, users, setUsers }) => {
+  const { _id, first_name, last_name, avatar, email, domain, available } = user;
   const name = first_name.trim() + " " + last_name.trim();
+  async function handleDelete() {
+    await axios.delete(`/users/${_id}`).then((d) => {
+      console.log(d.data);
+      setUsers(
+        users.filter((user) => {
+          return _id !== user._id;
+        })
+      );
+    });
+  }
   return (
     <tr className="userCard">
       <td>
@@ -20,7 +32,7 @@ const UserCard = ({ user }) => {
         <button>
           <Edit />
         </button>
-        <button>
+        <button onClick={handleDelete}>
           <Delete />
         </button>
       </td>
@@ -35,6 +47,19 @@ UserCard.propTypes = {
     email: PropTypes.string.isRequired,
     domain: PropTypes.string.isRequired,
     available: PropTypes.bool.isRequired,
+    _id: PropTypes.string.isRequired,
   }),
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      first_name: PropTypes.string.isRequired,
+      last_name: PropTypes.string.isRequired,
+      avatar: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      domain: PropTypes.string.isRequired,
+      available: PropTypes.bool.isRequired,
+      _id: PropTypes.string.isRequired,
+    })
+  ),
+  setUsers: PropTypes.func.isRequired,
 };
 export default UserCard;

@@ -54,6 +54,10 @@ const getUser = async (req, res, next) => {
       });
       // total user count matching the name query
       let totalUser = await User.aggregate(totalUserCountPipeline);
+      if (totalUser.length < 1) {
+        return res.status(200).send([users, 0]);
+      }
+      console.log(totalUser, 99);
       return res.status(200).send([users, totalUser[0].totalUser]);
     } catch (err) {
       next(err);

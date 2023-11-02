@@ -2,7 +2,7 @@ function IconDelete(props) {
   return (
     <svg
       viewBox="0 0 1024 1024"
-      fill="currentColor"
+      fill="#cb2e1d"
       height="2rem"
       width="2rem"
       {...props}

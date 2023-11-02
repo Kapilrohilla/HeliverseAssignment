@@ -1,9 +1,9 @@
 import UserCard from "../userCard/UserCard";
 import "./main.scss";
-import { Suspense, useContext } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../context/Context";
 const Main = () => {
-  const { user } = useContext(UserContext);
+  const { users, setUsers } = useContext(UserContext);
   return (
     <main className="main">
       <table className="userTable">
@@ -17,12 +17,19 @@ const Main = () => {
           </tr>
         </thead>
         <tbody>
-          <Suspense fallback={<p>Loading...</p>}>
-            {user &&
-              user.map((user) => {
-                return <UserCard key={user._id} user={user} />;
-              })}
-          </Suspense>
+          {/* <Suspense fallback={<p>Loading...</p>}> */}
+          {users &&
+            users.map((user, _index, arr) => {
+              return (
+                <UserCard
+                  key={user._id}
+                  user={user}
+                  users={arr}
+                  setUsers={setUsers}
+                />
+              );
+            })}
+          {/* </Suspense> */}
         </tbody>
       </table>
     </main>
