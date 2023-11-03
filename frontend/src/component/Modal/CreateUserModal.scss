@@ -6,6 +6,9 @@
   background-color: white;
   padding: 20px;
   border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   .modal-top {
     display: flex;
     flex-direction: row;
@@ -15,10 +18,12 @@
       font-weight: 500;
     }
   }
-  .row1 input:first-of-type {
-    margin-bottom: 10px;
+  .radioBtns {
+    display: flex;
+    gap: 5px;
   }
   .row {
-    margin-block: 10px;
+    display: flex;
+    justify-content: space-between;
   }
 }
