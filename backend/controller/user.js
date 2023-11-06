@@ -30,11 +30,6 @@ const getUser = async (req, res, next) => {
   if (!gender) {
     gender = "";
   }
-  logger.info("name = ", name);
-  logger.info("domain = ", domain);
-  logger.info("gender = ", gender);
-  logger.info("available = ", available);
-  // let users; // output
   if (name) {
     try {
       let pipeline = [
@@ -68,20 +63,19 @@ const getUser = async (req, res, next) => {
           $limit: limit,
         },
       ];
-      /*
-      TODO need to fix filter for available
+
       if (available !== undefined) {
         const pipelineBeforeInsertionIndex = pipeline.slice(0, 2);
         const pipelineAfterInsertionIndex = pipeline.slice(2);
         pipeline = pipelineBeforeInsertionIndex
           .concat({
-            $exec: {
-              available,
+            $match: {
+              available: available,
             },
           })
           .concat(pipelineAfterInsertionIndex);
       }
-      */
+
       const users = await User.aggregate(pipeline);
       // finding total users
       const totalUserCountPipeline = pipeline.slice(0, 2).concat({
