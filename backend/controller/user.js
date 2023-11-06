@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const logger = require("../utils/logger");
 const { initializeApp } = require("firebase/app");
 const {
   getStorage,
@@ -12,35 +13,54 @@ const config = require("../utils/config");
 initializeApp(config.firebaseConfig);
 const storage = getStorage();
 
-// TODO fix find user by domain, gender, availablity
 const getUser = async (req, res, next) => {
   let { page = 1, limit = 10, name, domain, gender, available } = req.query;
   limit = Number(limit);
   page = Number(page);
-  gender = Boolean(gender);
-  available = Boolean(available);
   const skip = (page - 1) * limit;
 
-  let users; // output
+  if (available === "false") {
+    available = false;
+  } else if (available === "true") {
+    available = true;
+  }
+  if (!domain) {
+    domain = "";
+  }
+  if (!gender) {
+    gender = "";
+  }
+  logger.info("name = ", name);
+  logger.info("domain = ", domain);
+  logger.info("gender = ", gender);
+  logger.info("available = ", available);
+  // let users; // output
   if (name) {
     try {
-      const pipeline = [
+      let pipeline = [
         {
           $addFields: {
-            nameFilter: {
+            full_name: {
               $concat: ["$first_name", " ", "$last_name"],
             },
           },
         },
         {
           $match: {
-            nameFilter: {
+            full_name: {
               $regex: `${name}`,
               $options: "i",
             },
+            domain: {
+              $regex: `${domain}`,
+              $options: "i",
+            },
+            gender: {
+              $regex: `${gender}`,
+              // $options: "i",
+            },
           },
         },
-
         {
           $skip: skip,
         },
@@ -48,7 +68,21 @@ const getUser = async (req, res, next) => {
           $limit: limit,
         },
       ];
-      users = await User.aggregate(pipeline);
+      /*
+      TODO need to fix filter for available
+      if (available !== undefined) {
+        const pipelineBeforeInsertionIndex = pipeline.slice(0, 2);
+        const pipelineAfterInsertionIndex = pipeline.slice(2);
+        pipeline = pipelineBeforeInsertionIndex
+          .concat({
+            $exec: {
+              available,
+            },
+          })
+          .concat(pipelineAfterInsertionIndex);
+      }
+      */
+      const users = await User.aggregate(pipeline);
       // finding total users
       const totalUserCountPipeline = pipeline.slice(0, 2).concat({
         $count: "totalUser",
@@ -58,14 +92,13 @@ const getUser = async (req, res, next) => {
       if (totalUser.length < 1) {
         return res.status(200).send([users, 0]);
       }
-      console.log(totalUser, 99);
       return res.status(200).send([users, totalUser[0].totalUser]);
     } catch (err) {
       next(err);
     }
   } else {
     try {
-      users = await User.find().skip(skip).limit(limit);
+      const users = await User.find().skip(skip).limit(limit);
       totalUser = await User.find().count();
       users = [users, totalUser];
       return res.status(200).send(users);
@@ -94,12 +127,9 @@ const deleteUser = async (req, res, next) => {
     const user = await User.findById(id);
     if (user !== null) {
       const userProfilePic = user.avatar;
-      // image reverence in firebase
-      console.log(userProfilePic);
       if (userProfilePic.includes("firebasestorage")) {
         const imageRef = ref(storage, userProfilePic);
-        const r = await deleteObject(imageRef);
-        console.log(r);
+        await deleteObject(imageRef);
       }
       const delRes = await User.findByIdAndDelete(id);
       if (!delRes) {
@@ -118,14 +148,16 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-// TODO multer needs to be setup for avatar or use external service for storage
 const createUser = async (req, res, next) => {
-  let { first_name, last_name, email, gender, domain, available } = req.body;
-  if (available === "false") {
-    available = false;
-  } else {
-    available = true;
-  }
+  let {
+    first_name,
+    last_name,
+    email,
+    gender,
+    domain = "None",
+    available,
+  } = req.body;
+  available = Boolean(available);
 
   const dateTime = giveCurrentDateTime();
 
@@ -208,7 +240,115 @@ const createUser = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = { getUser, getSpecificUser, deleteUser, createUser };
+
+// incomplete
+/*
+const updateUser = async (req, res) => {
+  let {
+    first_name,
+    last_name,
+    email,
+    gender,
+    domain = "None",
+    available = false,
+  } = req.body;
+
+  const id = req.params.id;
+
+  if (!(first_name || last_name || email || gender)) {
+    return res.status(400).send({
+      err: "first_name, last_name, email, gender is required",
+    });
+  }
+
+  available = Boolean(available);
+
+  if (typeof available !== "boolean") {
+    return res.status(400).send({
+      err: "available should be a boolean value",
+    });
+  }
+
+  let avatar;
+  let oldUserId;
+  try {
+    oldUserId = await User.findById(id);
+    console.log(oldUserId, 0);
+    if (avatar !== oldUserId.avatar) {
+      const dateTime = giveCurrentDateTime();
+      const oldAvatar = oldUserId.avatar;
+      if (oldAvatar.includes("firebasestorage")) {
+        const imageRef = ref(storage, oldAvatar);
+        try {
+          await deleteObject(imageRef);
+        } catch (err) {
+          return res.status(400).send({
+            err: `Error: update failed ${err.message}`,
+          });
+        }
+      }
+
+      const storageRef = ref(
+        storage,
+        `files/${req.file.originalname + "--time--" + dateTime}`
+      );
+      const metaData = {
+        contentType: req.file.mimetype,
+      };
+      const snapshot = await uploadBytesResumable(
+        storageRef,
+        req.file.buffer,
+        metaData
+      );
+
+      avatar = await getDownloadURL(snapshot.ref);
+    }
+  } catch (err) {
+    return res.status(400).send({ err: `Failed to update: ${err.message}` });
+  }
+  // need update
+  try {
+    const user = await User.findByIdAndUpdate({
+      first_name,
+      last_name,
+      email,
+      gender,
+      avatar,
+      domain,
+      available,
+    });
+    if (user) {
+      return res.status(200).send(user);
+      // return res.status(201).send({
+      //   id: user._id,
+      //   first_name: user.first_name,
+      //   last_name: user.last_name,
+      //   email: user.last_name,
+      //   gender: user.gender,
+      //   avatar: downloadURL,
+      //   domain: user.domain,
+      //   available: user.available,
+      // });
+    } else {
+      return res.status(500).send({
+        err: "Failed to add update user database",
+      });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      err: "Something went wrong!",
+      message: err.message,
+    });
+  }
+};
+*/
+module.exports = {
+  getUser,
+  getSpecificUser,
+  deleteUser,
+  createUser,
+  // updateUser,
+};
 
 /* helper function */
 function isEmail(email) {

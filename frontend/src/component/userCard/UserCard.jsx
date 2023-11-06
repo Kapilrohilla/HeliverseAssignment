@@ -2,13 +2,17 @@ import Delete from "../../Icons/Delete";
 import PropTypes from "prop-types";
 import Edit from "../../Icons/Edit";
 import axios from "axios";
+import UpdateUserModal from "../Modal/UpdateUserModal";
+import { useState } from "react";
 
 const UserCard = ({ user, users, setUsers }) => {
+  const [showUpdateUser, setShowUpdateUser] = useState(false);
   const { _id, first_name, last_name, avatar, email, domain, available } = user;
   const name = first_name.trim() + " " + last_name.trim();
   async function handleDelete() {
     await axios.delete(`/users/${_id}`).then((d) => {
       console.log(d.data);
+      alert(`${name} deleted successful!`);
       setUsers(
         users.filter((user) => {
           return _id !== user._id;
@@ -30,15 +34,26 @@ const UserCard = ({ user, users, setUsers }) => {
       <td>{available ? "Yes" : "No"}</td>
       <td>
         <button>
-          <Edit />
+          <Edit onClick={() => setShowUpdateUser(true)} />
         </button>
         <button onClick={handleDelete}>
           <Delete />
         </button>
       </td>
+      {showUpdateUser ? (
+        <UpdateUserModal
+          user={user}
+          setShowUpdateUser={setShowUpdateUser}
+          setUser={setUsers}
+          users={users}
+        />
+      ) : (
+        ""
+      )}
     </tr>
   );
 };
+
 UserCard.propTypes = {
   user: PropTypes.shape({
     first_name: PropTypes.string.isRequired,

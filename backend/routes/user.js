@@ -5,6 +5,7 @@ const {
   getSpecificUser,
   deleteUser,
   createUser,
+  updateUser,
 } = require("../controller/user");
 const uploads = require("../utils/multerCon");
 // GET /api/users: Retrieve all users with pagination support.
@@ -20,5 +21,6 @@ router
   .get("/:id", getSpecificUser)
   .post("/", uploads.single("avatar"), createUser)
   .delete("/:id", deleteUser);
+// .put("/:id", uploads.single("avatar"), updateUser);
 
 module.exports = router;

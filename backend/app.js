@@ -21,7 +21,8 @@ logger.info("connecting to mongodb");
 
 mongoose
   .connect(config.MONGODB_URI)
-  .then(() => logger.info(`connected to mongodb: ${config.MONGODB_URI}`))
+  // .then(() => logger.info(`connected to mongodb: ${config.MONGODB_URI}`))
+  .then(() => logger.info(`connected to mongodb `))
   .catch((err) => logger.error(`Failed to connect mongodb: ${err}`));
 
 // populating user data
@@ -30,7 +31,7 @@ const populate = require("./controller/populateDb");
 app.use("/ping", (req, res) => {
   res.send("pong");
 });
-app.post("/populate", populate);
+app.get("/populate", populate);
 app.use("/api/users", userRoutes);
 app.use(middleware.errorHandler);
 module.exports = app;

@@ -1,8 +1,8 @@
-import { UserContext } from "../context/Context";
+import { UserContext } from "../../context/Context";
 import { useContext } from "react";
 import "./pagination.scss";
-import IconRight from "../Icons/Right";
-import IconLeft from "../Icons/Left";
+import IconRight from "../../Icons/Right";
+import IconLeft from "../../Icons/Left";
 const disabledBtn = {
   backgroundColor: "#eee",
   color: "black",
