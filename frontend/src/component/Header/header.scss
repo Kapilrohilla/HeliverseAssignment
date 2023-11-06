@@ -3,6 +3,30 @@
   box-shadow: 0px 0px 21px 7px rgba(0, 0, 0, 0.11);
   -webkit-box-shadow: 0px 0px 21px 7px rgba(0, 0, 0, 0.11);
   -moz-box-shadow: 0px 0px 21px 7px rgba(0, 0, 0, 0.11);
+  .features {
+    display: flex;
+    gap: 10px;
+  }
+  select {
+    /* Reset */
+    appearance: none;
+    border: 1px solid black;
+    outline: 0;
+    font: inherit;
+    padding: 0.3rem 0.3rem;
+    background-color: white;
+    color: black;
+    border-radius: 0.25em;
+    // width: 100%;
+
+    &:focus {
+      outline: none;
+    }
+    option {
+      color: inherit;
+      background-color: white;
+    }
+  }
 
   h1 {
     font-weight: 500;
@@ -16,7 +40,8 @@
     align-items: center;
     gap: 5px;
     font-size: 1.2rem;
-    height: 30px;
+    flex-direction: column;
+    align-items: flex-start;
     .search {
       display: flex;
       gap: 10px;
@@ -48,6 +73,10 @@
         }
       }
     }
+    .features {
+      display: flex;
+      gap: 10px;
+    }
     .addUser {
       height: 100%;
       button {
@@ -78,7 +107,6 @@
 }
 @media screen and (max-width: 650px) {
   .header {
-    height: 200px;
     .searchBlock {
       align-items: flex-start;
       flex-direction: column;
@@ -87,6 +115,9 @@
 }
 @media screen and (max-width: 400px) {
   .header {
+    select {
+      width: 100%;
+    }
     .searchBlock {
       .search {
         flex-direction: column;

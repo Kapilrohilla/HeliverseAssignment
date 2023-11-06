@@ -52,7 +52,6 @@ const getUser = async (req, res, next) => {
             },
             gender: {
               $regex: `${gender}`,
-              // $options: "i",
             },
           },
         },
@@ -64,7 +63,7 @@ const getUser = async (req, res, next) => {
         },
       ];
 
-      if (available !== undefined) {
+      if (available !== "") {
         const pipelineBeforeInsertionIndex = pipeline.slice(0, 2);
         const pipelineAfterInsertionIndex = pipeline.slice(2);
         pipeline = pipelineBeforeInsertionIndex
@@ -92,7 +91,7 @@ const getUser = async (req, res, next) => {
     }
   } else {
     try {
-      const users = await User.find().skip(skip).limit(limit);
+      let users = await User.find().skip(skip).limit(limit);
       totalUser = await User.find().count();
       users = [users, totalUser];
       return res.status(200).send(users);

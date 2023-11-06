@@ -13,6 +13,8 @@
     width: 100%;
     thead {
       text-align: left;
+      background-color: #aaa;
+      padding: 4px;
     }
     th {
       font-weight: 500;
@@ -30,7 +32,6 @@
         overflow: hidden;
         object-fit: cover;
       }
-
       td:first-of-type {
         display: flex;
         flex-direction: row;
