@@ -63,7 +63,7 @@ const getUser = async (req, res, next) => {
         },
       ];
 
-      if (available !== "") {
+      if (available !== "" && available !== undefined) {
         const pipelineBeforeInsertionIndex = pipeline.slice(0, 2);
         const pipelineAfterInsertionIndex = pipeline.slice(2);
         pipeline = pipelineBeforeInsertionIndex

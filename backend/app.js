@@ -8,6 +8,7 @@ const config = require("./utils/config");
 const userRoutes = require("./routes/user");
 const middleware = require("./utils/middleware");
 const featureRoutes = require("./routes/features");
+const teamRoutes = require("./routes/team");
 app.use(cors());
 app.use(express.json());
 
@@ -35,5 +36,6 @@ app.use("/ping", (req, res) => {
 app.get("/populate", populate);
 app.use("/api/users", userRoutes);
 app.use("/api/feature", featureRoutes);
+app.use("/api/team", teamRoutes);
 app.use(middleware.errorHandler);
 module.exports = app;
