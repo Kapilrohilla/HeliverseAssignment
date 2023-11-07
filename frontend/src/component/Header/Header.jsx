@@ -62,7 +62,7 @@ const Header = ({ displayCreateUser, displayTeams }) => {
       <h1>Users</h1>
       <form className="searchBlock" onSubmit={handleSearchSubmit}>
         <div className="search">
-          <span>Search :</span>
+          <span style={{ minWidth: "70px" }}>Search :</span>
           <div className="searchInput">
             <input
               type="search"
