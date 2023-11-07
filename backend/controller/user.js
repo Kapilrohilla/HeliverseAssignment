@@ -30,80 +30,58 @@ const getUser = async (req, res, next) => {
   if (!gender) {
     gender = "";
   }
+
+  const pipeline = [
+    {
+      $addFields: {
+        full_name: {
+          $concat: ["$first_name", " ", "$last_name"],
+        },
+      },
+    },
+    {
+      $match: {},
+    },
+    {
+      $unset: "full_name",
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+  ];
   if (name) {
-    try {
-      let pipeline = [
-        {
-          $addFields: {
-            full_name: {
-              $concat: ["$first_name", " ", "$last_name"],
-            },
-          },
-        },
-        {
-          $match: {
-            full_name: {
-              $regex: `${name}`,
-              $options: "i",
-            },
-            domain: {
-              $regex: `${domain}`,
-              $options: "i",
-            },
-            gender: {
-              $regex: `${gender}`,
-            },
-          },
-        },
-        {
-          $unset: "full_name",
-        },
-        {
-          $skip: skip,
-        },
-        {
-          $limit: limit,
-        },
-      ];
-
-      if (available !== "" && available !== undefined) {
-        const pipelineBeforeInsertionIndex = pipeline.slice(0, 2);
-        const pipelineAfterInsertionIndex = pipeline.slice(2);
-        pipeline = pipelineBeforeInsertionIndex
-          .concat({
-            $match: {
-              available: available,
-            },
-          })
-          .concat(pipelineAfterInsertionIndex);
-      }
-
-      let users = await User.aggregate(pipeline);
-      users = users.map((user) => {
-        return User.hydrate(user);
-      });
-      // finding total users
-      const totalUserCountPipeline = pipeline.slice(0, 2).concat({
-        $count: "totalUser",
-      });
-      // total user count matching the name query
-      let totalUser = await User.aggregate(totalUserCountPipeline);
-      if (totalUser.length < 1) {
-        return res.status(200).send([users, 0]);
-      }
-      return res.status(200).send([users, totalUser[0].totalUser]);
-    } catch (err) {
-      next(err);
-    }
-  } else {
-    try {
-      let users = await User.find().skip(skip).limit(limit);
-      totalUser = await User.find().count();
-      users = [users, totalUser];
-      return res.status(200).send(users);
-    } catch (err) {
-      next(err);
-    }
+    // const match = pipeline[1].$match;
+    // console.log(match);
+    pipeline[1].$match.full_name = { $regex: `${name}`, $options: "i" };
+    // console.log(pipeline);
+  }
+  if (domain) {
+    pipeline[1].$match.domain = { $regex: `${domain}`, $options: "i" };
+  }
+  if (gender) {
+    pipeline[1].$match.gender = { $regex: `${gender}` };
+  }
+  if (available !== "" && available !== undefined) {
+    pipeline[1].$match.available = available;
+  }
+  try {
+    let users = await User.aggregate(pipeline);
+    // performing toJSON operation on users
+    users = users.map((user) => {
+      return User.hydrate(user);
+    });
+    // finding total users
+    const totalUserCountPipeline = pipeline.slice(0, 3).concat({
+      $count: "totalUser",
+    });
+    // total user count matching the name query
+    let totalUser = await User.aggregate(totalUserCountPipeline);
+    return res.status(200).send([users, totalUser[0].totalUser]);
+  } catch (err) {
+    next(err);
   }
 };
 
