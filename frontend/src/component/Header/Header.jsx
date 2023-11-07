@@ -6,14 +6,34 @@ import { UserContext } from "../../context/Context";
 import { useContext } from "react";
 import PropsTypes from "prop-types";
 import axios from "axios";
-const Header = ({ displayCreateUser }) => {
+import { TeamContext } from "../../context/TeamContext";
+const Header = ({ displayCreateUser, displayTeams }) => {
   const [searchString, setSearchString] = useState("");
   const { setQueryParams } = useContext(UserContext);
   const [domains, setDomains] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState("");
   const [gender, setGender] = useState("");
   const [available, setAvailable] = useState("");
+  const { teamMember, setTeams, teams } = useContext(TeamContext);
 
+  function handleCreateTeam() {
+    const teamTitle = prompt("Please, team name: ");
+    if (!teamTitle) {
+      return;
+    }
+    const team = { title: teamTitle, members: teamMember };
+    axios
+      .post("/team", team)
+      .then((d) => {
+        setTeams(teams.concat(d.data));
+        alert("successfully created team");
+        window.location.reload();
+      })
+      .catch((err) => {
+        alert("Error: team should have unique domain members");
+        console.log(err.message);
+      });
+  }
   function handleSearchSubmit(e) {
     e.preventDefault();
     setQueryParams(
@@ -29,6 +49,7 @@ const Header = ({ displayCreateUser }) => {
     setGender("");
     setSearchString("");
   }
+
   useEffect(() => {
     async function getDomains() {
       const domain = (await axios.get("/feature/domain")).data;
@@ -94,17 +115,23 @@ const Header = ({ displayCreateUser }) => {
           </div>
         </div>
         <div className="features">
-          <div className="reset">
-            <button onClick={handleResetBtn}>RESET</button>
+          <div className="left">
+            <div className="reset">
+              <button onClick={handleResetBtn}>RESET</button>
+            </div>
+            <div className="addUser">
+              <button
+                onClick={() => {
+                  displayCreateUser(true);
+                }}
+              >
+                ADD-USER
+              </button>
+            </div>
           </div>
-          <div className="addUser">
-            <button
-              onClick={() => {
-                displayCreateUser(true);
-              }}
-            >
-              ADD-USER
-            </button>
+          <div className="right">
+            <button onClick={displayTeams}>Displays Team</button>
+            <button onClick={handleCreateTeam}>Create Team</button>
           </div>
         </div>
       </form>
@@ -113,5 +140,6 @@ const Header = ({ displayCreateUser }) => {
 };
 Header.propTypes = {
   displayCreateUser: PropsTypes.func.isRequired,
+  displayTeams: PropsTypes.func.isRequired,
 };
 export default Header;

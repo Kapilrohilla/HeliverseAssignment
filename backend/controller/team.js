@@ -36,7 +36,10 @@ async function createTeam(req, res, next) {
       members,
     });
     if (team) {
-      return res.status(201).send(team);
+      const recentlyCreatedTeam = await Team.findById(team.id).populate(
+        "members"
+      );
+      return res.status(201).send(recentlyCreatedTeam);
     } else {
       return res.status(400).send({
         err: "Error: Failed to create team",

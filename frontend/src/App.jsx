@@ -6,17 +6,30 @@ import UserContextProvider from "./context/Context";
 import Pagination from "./component/pagination/Pagination";
 import CreateUserModal from "./component/Modal/CreateUserModal";
 import { useState } from "react";
+import TeamContextProvider from "./context/TeamContext";
+import ShowTeamsModal from "./component/Modal/ShowTeamsModal";
+
 function App() {
   axios.defaults.baseURL = "http://localhost:3000/api/";
   const [showUser, setShowUser] = useState(false);
+  const [showTeams, setShowTeams] = useState(false);
+
   return (
     <UserContextProvider>
-      <div className="app-container">
-        <Header displayCreateUser={setShowUser} />
-        <Main />
-        <Pagination />
-        {showUser ? <CreateUserModal showCreateUser={setShowUser} /> : ""}
-      </div>
+      <TeamContextProvider>
+        <div className="app-container">
+          <Header
+            displayCreateUser={setShowUser}
+            displayTeams={() => setShowTeams(true)}
+          />
+          <Main />
+          <Pagination />
+          {showUser && <CreateUserModal showCreateUser={setShowUser} />}
+          {showTeams && (
+            <ShowTeamsModal displayTeams={() => setShowTeams(false)} />
+          )}
+        </div>
+      </TeamContextProvider>
     </UserContextProvider>
   );
 }

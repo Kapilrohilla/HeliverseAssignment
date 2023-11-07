@@ -1,12 +1,9 @@
 import Delete from "../../Icons/Delete";
 import PropTypes from "prop-types";
-import Edit from "../../Icons/Edit";
 import axios from "axios";
-import UpdateUserModal from "../Modal/UpdateUserModal";
-import { useState } from "react";
-
+import { useContext } from "react";
+import { TeamContext } from "../../context/TeamContext";
 const UserCard = ({ user, users, setUsers }) => {
-  const [showUpdateUser, setShowUpdateUser] = useState(false);
   const { id, first_name, last_name, avatar, email, domain, available } = user;
   const name = first_name.trim() + " " + last_name.trim();
   function handleDelete() {
@@ -25,6 +22,15 @@ const UserCard = ({ user, users, setUsers }) => {
         console.log(err.message);
       });
   }
+  const { teamMember, setTeamMember } = useContext(TeamContext);
+
+  function handleTeamInsertion() {
+    if (!teamMember.includes(user.id)) {
+      setTeamMember(teamMember.concat(user.id));
+    } else {
+      setTeamMember(teamMember.filter((member) => member !== user.id));
+    }
+  }
   return (
     <tr className="userCard">
       <td>
@@ -37,24 +43,14 @@ const UserCard = ({ user, users, setUsers }) => {
       <td>{email}</td>
       <td>{domain}</td>
       <td>{available ? "Yes" : "No"}</td>
-      <td>
-        <button>
-          <Edit onClick={() => setShowUpdateUser(true)} />
-        </button>
+      <td id="actionBtns">
         <button onClick={handleDelete}>
           <Delete />
         </button>
       </td>
-      {showUpdateUser ? (
-        <UpdateUserModal
-          user={user}
-          setShowUpdateUser={setShowUpdateUser}
-          setUser={setUsers}
-          users={users}
-        />
-      ) : (
-        ""
-      )}
+      <td>
+        <input type="checkbox" id="add2team" onClick={handleTeamInsertion} />
+      </td>
     </tr>
   );
 };

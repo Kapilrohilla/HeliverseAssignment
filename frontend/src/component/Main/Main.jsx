@@ -14,6 +14,7 @@ const Main = () => {
             <th>Domain</th>
             <th>Availablity</th>
             <th>Actions</th>
+            <th>Team</th>
           </tr>
         </thead>
         <tbody>

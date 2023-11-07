@@ -5,7 +5,27 @@
   -moz-box-shadow: 0px 0px 21px 7px rgba(0, 0, 0, 0.11);
   .features {
     display: flex;
-    gap: 10px;
+    // gap: 10px;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    .left {
+      display: flex;
+      gap: 10px;
+    }
+    .right {
+      display: flex;
+      gap: 10px;
+      button {
+        background-color: rgb(53, 109, 192);
+        color: white;
+        height: 100%;
+        font-weight: 700;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 10px;
+      }
+    }
   }
   select {
     /* Reset */
@@ -72,10 +92,6 @@
           }
         }
       }
-    }
-    .features {
-      display: flex;
-      gap: 10px;
     }
     .addUser {
       height: 100%;
