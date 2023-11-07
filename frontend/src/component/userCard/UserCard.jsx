@@ -7,18 +7,23 @@ import { useState } from "react";
 
 const UserCard = ({ user, users, setUsers }) => {
   const [showUpdateUser, setShowUpdateUser] = useState(false);
-  const { _id, first_name, last_name, avatar, email, domain, available } = user;
+  const { id, first_name, last_name, avatar, email, domain, available } = user;
   const name = first_name.trim() + " " + last_name.trim();
-  async function handleDelete() {
-    await axios.delete(`/users/${_id}`).then((d) => {
-      console.log(d.data);
-      alert(`${name} deleted successful!`);
-      setUsers(
-        users.filter((user) => {
-          return _id !== user._id;
-        })
-      );
-    });
+  function handleDelete() {
+    axios
+      .delete(`/users/${id}`)
+      .then((d) => {
+        console.log(d.data);
+        alert(`${name} deleted successful!`);
+        setUsers(
+          users.filter((user) => {
+            return id !== user.id;
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
   return (
     <tr className="userCard">
@@ -62,7 +67,7 @@ UserCard.propTypes = {
     email: PropTypes.string.isRequired,
     domain: PropTypes.string.isRequired,
     available: PropTypes.bool.isRequired,
-    _id: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
   }),
   users: PropTypes.arrayOf(
     PropTypes.shape({
@@ -72,7 +77,7 @@ UserCard.propTypes = {
       email: PropTypes.string.isRequired,
       domain: PropTypes.string.isRequired,
       available: PropTypes.bool.isRequired,
-      _id: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
     })
   ),
   setUsers: PropTypes.func.isRequired,

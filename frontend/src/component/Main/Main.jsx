@@ -22,7 +22,7 @@ const Main = () => {
             users.map((user, _index, arr) => {
               return (
                 <UserCard
-                  key={user._id}
+                  key={user.id}
                   user={user}
                   users={arr}
                   setUsers={setUsers}

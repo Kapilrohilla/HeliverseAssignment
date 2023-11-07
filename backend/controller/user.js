@@ -56,6 +56,9 @@ const getUser = async (req, res, next) => {
           },
         },
         {
+          $unset: "full_name",
+        },
+        {
           $skip: skip,
         },
         {
@@ -75,7 +78,10 @@ const getUser = async (req, res, next) => {
           .concat(pipelineAfterInsertionIndex);
       }
 
-      const users = await User.aggregate(pipeline);
+      let users = await User.aggregate(pipeline);
+      users = users.map((user) => {
+        return User.hydrate(user);
+      });
       // finding total users
       const totalUserCountPipeline = pipeline.slice(0, 2).concat({
         $count: "totalUser",
@@ -116,8 +122,10 @@ const getSpecificUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   const id = req.params.id;
+  console.log(id, "id");
   try {
     const user = await User.findById(id);
+    console.log(user, "user");
     if (user !== null) {
       const userProfilePic = user.avatar;
       if (userProfilePic.includes("firebasestorage")) {
