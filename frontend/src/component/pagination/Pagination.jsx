@@ -7,6 +7,7 @@ const disabledBtn = {
   backgroundColor: "#eee",
   color: "black",
 };
+
 const Pagination = () => {
   const { page, setPage, totalPage } = useContext(UserContext);
   function prevPage() {
