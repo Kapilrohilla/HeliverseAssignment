@@ -71,7 +71,8 @@
         align-items: center;
         border: 1px solid black;
         border-radius: 5px;
-        padding-inline: 5px;
+        // padding-inline: 5px;
+        overflow: hidden;
         width: 100%;
         input[type="search"] {
           border: none;
@@ -84,6 +85,8 @@
         button {
           background: none;
           border: none;
+          background-color: #cb2e1d;
+          color: white;
           svg {
             vertical-align: middle;
             height: 100%;

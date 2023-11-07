@@ -2,7 +2,7 @@ import "./App.scss";
 import Header from "./component/Header/Header";
 import Main from "./component/Main/Main";
 import axios from "axios";
-import UserContextProvider from "./context/Context";
+import UserContextProvider from "./context/UserContext";
 import Pagination from "./component/pagination/Pagination";
 import CreateUserModal from "./component/Modal/CreateUserModal";
 import { useState } from "react";

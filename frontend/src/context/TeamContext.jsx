@@ -13,7 +13,7 @@ const TeamContextProvider = ({ children }) => {
       .get("/team")
       .then((d) => setTeams(d.data))
       .catch((err) => {
-        alert("Error: team should have unique domain members");
+        alert("Database connection failed, Reload");
         console.log(err.message);
       });
   }, []);

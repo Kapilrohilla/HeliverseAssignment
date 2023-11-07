@@ -1,7 +1,7 @@
 import UserCard from "../userCard/UserCard";
 import "./main.scss";
 import { useContext } from "react";
-import { UserContext } from "../../context/Context";
+import { UserContext } from "../../context/UserContext";
 const Main = () => {
   const { users, setUsers } = useContext(UserContext);
   return (

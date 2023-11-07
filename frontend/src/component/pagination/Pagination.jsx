@@ -1,4 +1,4 @@
-import { UserContext } from "../../context/Context";
+import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
 import "./pagination.scss";
 import IconRight from "../../Icons/Right";

@@ -2,7 +2,7 @@ import "./header.scss";
 import SearchIcon from "../../Icons/Search";
 import { useEffect, useState } from "react";
 
-import { UserContext } from "../../context/Context";
+import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
 import PropsTypes from "prop-types";
 import axios from "axios";
@@ -39,7 +39,6 @@ const Header = ({ displayCreateUser, displayTeams }) => {
     setQueryParams(
       `name=${searchString}&domain=${selectedDomain}&gender=${gender}&available=${available}`
     );
-    // setSearchString("");
   }
 
   function handleResetBtn() {
@@ -48,6 +47,9 @@ const Header = ({ displayCreateUser, displayTeams }) => {
     setAvailable("");
     setGender("");
     setSearchString("");
+    setSelectedDomain("");
+    setAvailable("");
+    setGender("");
   }
 
   useEffect(() => {
@@ -95,6 +97,7 @@ const Header = ({ displayCreateUser, displayTeams }) => {
             <select
               name="available"
               id="available"
+              value={available}
               onChange={(e) => {
                 setAvailable(e.target.value);
               }}
@@ -106,6 +109,7 @@ const Header = ({ displayCreateUser, displayTeams }) => {
             <select
               name="gender"
               id="gender"
+              value={gender}
               onChange={(e) => setGender(e.target.value)}
             >
               <option value="">Gender</option>
