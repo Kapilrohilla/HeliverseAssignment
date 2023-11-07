@@ -30,8 +30,8 @@ mongoose
 // populating user data
 const populate = require("./controller/populateDb");
 // routes
-app.use("/ping", (req, res) => {
-  res.send("pong");
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
 });
 app.get("/populate", populate);
 app.use("/api/users", userRoutes);

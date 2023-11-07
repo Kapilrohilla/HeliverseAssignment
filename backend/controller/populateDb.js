@@ -7,8 +7,7 @@ module.exports = async (req, res, next) => {
     await User.deleteMany();
     console.log("previous data deleted successfully");
   } catch (err) {
-    console.log("failed to users previous data");
-    return;
+    console.log("Database was empty");
   }
   try {
     await Team.deleteMany({});
@@ -27,7 +26,8 @@ module.exports = async (req, res, next) => {
     // console.log(filehandle);
     res.send("Database populated successfully!");
   } catch (err) {
-    console.log(err, 1);
+    logger.error(err, 1);
+    return res.sendStatus(500);
   } finally {
     await filehandle?.close();
   }

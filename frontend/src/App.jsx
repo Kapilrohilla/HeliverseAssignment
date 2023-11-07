@@ -10,7 +10,7 @@ import TeamContextProvider from "./context/TeamContext";
 import ShowTeamsModal from "./component/Modal/ShowTeamsModal";
 
 function App() {
-  axios.defaults.baseURL = "http://localhost:3000/api/";
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [showUser, setShowUser] = useState(false);
   const [showTeams, setShowTeams] = useState(false);
 
