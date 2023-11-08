@@ -2,21 +2,15 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 require("dotenv").config();
 const app = require("../app");
-const User = require("../model/user");
-const team = require("../model/team");
 const helper = require("./helper");
 
 const api = supertest(app);
 
 beforeAll(async () => {
-  await User.deleteMany({});
-  await team.deleteMany({});
-  try {
-    await api.get("/populate").expect(200);
-  } catch (err) {
-    mongoose.connection.close();
-  }
+  // reset database
+  await api.get("/populate").expect(200);
 });
+// TODO complete search user testcases
 describe("search user api", () => {
   describe("success with ", () => {
     let response;
@@ -98,6 +92,27 @@ describe("delete user", () => {
   });
 });
 
+// features routes api test
+describe("should get distinct domain", () => {
+  test("success: statusCode 200, with array as response body", async () => {
+    const response = await api.get("/api/feature/domain");
+    expect(response.status).toBe(200);
+    expect(response.body.constructor).toBe(Array);
+    function isEveryDomainDistinct() {
+      response.body.forEach((domain) => {
+        for (let i = 1; i < response.body.length; i++) {
+          if (domain === response.body[i]) {
+            return false;
+          }
+        }
+      });
+      return true;
+    }
+
+    let isAllDistinct = isEveryDomainDistinct();
+    expect(isAllDistinct).toBeTruthy();
+  });
+});
 afterAll(() => {
   mongoose.connection.close();
 });

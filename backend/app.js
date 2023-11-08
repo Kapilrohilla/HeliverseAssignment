@@ -17,7 +17,7 @@ morgan.token("reqBody", function (req) {
 });
 
 const morganString = ":method :url :status :reqBody";
-app.use(morgan(morganString));
+app.use(morgan(morganString, { skip: (req, res) => config.mode === "test" }));
 
 logger.info("connecting to mongodb");
 

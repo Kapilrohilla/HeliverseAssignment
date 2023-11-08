@@ -6,9 +6,9 @@ const logger = require("../utils/logger");
 module.exports = async (req, res, next) => {
   try {
     await User.deleteMany();
-    console.log("previous data deleted successfully");
+    logger.info("Database cleared then database populated successful");
   } catch (err) {
-    console.log("Database was empty");
+    logger.error("Database was empty");
   }
   try {
     await Team.deleteMany({});

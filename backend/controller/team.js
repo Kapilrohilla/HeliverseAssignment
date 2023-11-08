@@ -70,7 +70,7 @@ async function getSpecificTeamDetail(req, res, next) {
 async function getAllTeams(_req, res, next) {
   try {
     const teams = await Team.find({}).populate("members");
-    if (teams) {
+    if (teams.length !== 0) {
       return res.send(teams);
     } else {
       return res.status(400).send({
