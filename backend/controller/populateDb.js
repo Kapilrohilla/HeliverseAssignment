@@ -2,6 +2,7 @@ const { open } = require("node:fs/promises");
 const path = require("path");
 const User = require("../model/user");
 const Team = require("../model/team");
+const logger = require("../utils/logger");
 module.exports = async (req, res, next) => {
   try {
     await User.deleteMany();
@@ -26,7 +27,7 @@ module.exports = async (req, res, next) => {
     // console.log(filehandle);
     res.send("Database populated successfully!");
   } catch (err) {
-    logger.error(err, 1);
+    // logger.error(err, 1);
     return res.sendStatus(500);
   } finally {
     await filehandle?.close();
