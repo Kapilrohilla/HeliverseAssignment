@@ -53,10 +53,7 @@ const getUser = async (req, res, next) => {
     },
   ];
   if (name) {
-    // const match = pipeline[1].$match;
-    // console.log(match);
     pipeline[1].$match.full_name = { $regex: `${name}`, $options: "i" };
-    // console.log(pipeline);
   }
   if (domain) {
     pipeline[1].$match.domain = { $regex: `${domain}`, $options: "i" };
@@ -79,7 +76,13 @@ const getUser = async (req, res, next) => {
     });
     // total user count matching the name query
     let totalUser = await User.aggregate(totalUserCountPipeline);
-    return res.status(200).send([users, totalUser[0].totalUser]);
+    if (totalUser[0]) {
+      return res.status(200).send([users, totalUser[0].totalUser]);
+    } else {
+      return res.status(404).send({
+        err: "user not found",
+      });
+    }
   } catch (err) {
     next(err);
   }
@@ -100,10 +103,8 @@ const getSpecificUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   const id = req.params.id;
-  console.log(id, "id");
   try {
     const user = await User.findById(id);
-    console.log(user, "user");
     if (user !== null) {
       const userProfilePic = user.avatar;
       if (userProfilePic.includes("firebasestorage")) {
@@ -161,26 +162,28 @@ const createUser = async (req, res, next) => {
       err: "email should be in correct format",
     });
   }
+  let downloadURL;
+  if (req.file) {
+    const storageRef = ref(
+      storage,
+      `files/${req.file.originalname + "       " + dateTime}`
+    );
+    // Create file metadata including the content type
+    const metadata = {
+      contentType: req.file.mimetype,
+    };
 
-  const storageRef = ref(
-    storage,
-    `files/${req.file.originalname + "       " + dateTime}`
-  );
-  // Create file metadata including the content type
-  const metadata = {
-    contentType: req.file.mimetype,
-  };
+    // Upload the file in the bucket storage
+    const snapshot = await uploadBytesResumable(
+      storageRef,
+      req.file.buffer,
+      metadata
+    );
+    //by using uploadBytesResumable we can control the progress of uploading like pause, resume, cancel
 
-  // Upload the file in the bucket storage
-  const snapshot = await uploadBytesResumable(
-    storageRef,
-    req.file.buffer,
-    metadata
-  );
-  //by using uploadBytesResumable we can control the progress of uploading like pause, resume, cancel
-
-  // Grab the public url
-  const downloadURL = await getDownloadURL(snapshot.ref);
+    // Grab the public url
+    downloadURL = await getDownloadURL(snapshot.ref);
+  }
 
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -188,17 +191,22 @@ const createUser = async (req, res, next) => {
       err: "user already exists",
     });
   }
-
-  try {
-    const user = await User.create({
+  let newUser;
+  if (downloadURL) {
+    newUser = {
       first_name,
       last_name,
       email,
       gender,
-      avatar: downloadURL,
-      domain,
       available,
-    });
+      domain,
+      avatar: downloadURL,
+    };
+  } else {
+    newUser = { first_name, last_name, email, gender, available, domain };
+  }
+  try {
+    const user = await User.create(newUser);
     if (user) {
       return res.status(201).send({
         id: user._id,

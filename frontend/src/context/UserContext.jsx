@@ -11,12 +11,18 @@ const UserContextProvider = ({ children }) => {
   const [queryParam, setQueryParams] = useState(``);
   useEffect(() => {
     let link = `/users?page=${page}&limit=${limit}&${queryParam}`;
-    console.log(link);
-    axios.get(link).then((d) => {
-      setUsers(d.data[0]);
 
-      totalPage.current = Math.ceil(d.data[1] / limit);
-    });
+    console.log(link);
+    axios
+      .get(link)
+      .then((d) => {
+        setUsers(d.data[0]);
+
+        totalPage.current = Math.ceil(d.data[1] / limit);
+      })
+      .catch((err) => {
+        alert(err.response.data.err);
+      });
   }, [page, queryParam]);
   return (
     <UserContext.Provider
