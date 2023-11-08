@@ -1,5 +1,8 @@
+const { mode } = require("./config");
 const info = (...msg) => {
-  console.log(...msg);
+  if (mode !== "test") {
+    console.log(...msg);
+  }
 };
 
 const error = (...err) => {

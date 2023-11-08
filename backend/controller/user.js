@@ -206,18 +206,12 @@ const createUser = async (req, res, next) => {
     newUser = { first_name, last_name, email, gender, available, domain };
   }
   try {
-    const user = await User.create(newUser);
+    // let user = await User.create(newUser);
+    let user = new User(newUser);
+    await user.save();
+    user = User.hydrate(user);
     if (user) {
-      return res.status(201).send({
-        id: user._id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.last_name,
-        gender: user.gender,
-        avatar: downloadURL,
-        domain: user.domain,
-        available: user.available,
-      });
+      return res.status(201).send(user);
     } else {
       return res.status(500).send({
         err: "Failed to add user in database",

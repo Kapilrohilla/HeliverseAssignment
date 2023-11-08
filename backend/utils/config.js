@@ -2,11 +2,14 @@ const mode = process.env.NODE_ENV;
 
 const PORT = mode == "production" ? process.env.PORT : 3000;
 
-const MONGODB_URI =
-  mode == "production"
-    ? process.env.MONGODB_URI
-    : process.env.DEVELOP_MONGODB_URI;
-
+let MONGODB_URI;
+if (mode === "production") {
+  MONGODB_URI = process.env.MONGODB_URI;
+} else if (mode === "development") {
+  MONGODB_URI = process.env.DEVELOP_MONGODB_URI;
+} else {
+  MONGODB_URI = process.env.TEST_MONGODB_URI;
+}
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -16,5 +19,5 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
-const config = { PORT, MONGODB_URI, firebaseConfig };
+const config = { PORT, MONGODB_URI, firebaseConfig, mode };
 module.exports = config;
