@@ -39,3 +39,4 @@ The frontend will on visible http://localhost:5713 in your browser and backend w
 - React
 - Mongoose (ORM)
 - Firebase Storage
+- Jest + Supertest
